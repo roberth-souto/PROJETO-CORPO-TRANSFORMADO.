@@ -18,8 +18,11 @@
 <script>
   const acessoLiberado = localStorage.getItem("acessoLiberado");
 
+  console.log("ACESSO LIBERADO:", acessoLiberado);
+
   if (acessoLiberado !== "true") {
-    window.location.href = "login.html";
+    alert("Sem acesso. Indo para login...");
+    window.location.href = "/login.html";
   }
 </script>
     <!-- ============================================================ -->
