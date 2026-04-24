@@ -3002,5 +3002,11 @@
     </script>
 
 </body>
+<script>
+  const acessoLiberado = localStorage.getItem("acessoLiberado");
 
+  if (acessoLiberado !== "true") {
+    window.location.href = "login.html";
+  }
+</script>
 </html>
