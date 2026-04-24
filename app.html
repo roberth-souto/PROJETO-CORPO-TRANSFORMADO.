@@ -15,7 +15,13 @@
 </head>
 
 <body>
+<script>
+  const acessoLiberado = localStorage.getItem("acessoLiberado");
 
+  if (acessoLiberado !== "true") {
+    window.location.href = "login.html";
+  }
+</script>
     <!-- ============================================================ -->
     <!-- LOGIN VIEW                                                    -->
     <!-- ============================================================ -->
@@ -3002,11 +3008,5 @@
     </script>
 
 </body>
-<script>
-  const acessoLiberado = localStorage.getItem("acessoLiberado");
 
-  if (acessoLiberado !== "true") {
-    window.location.href = "login.html";
-  }
-</script>
 </html>
