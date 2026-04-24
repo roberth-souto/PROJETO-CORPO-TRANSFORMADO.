@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Projeto Corpo Transformado</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;background:linear-gradient(135deg,#000,#1a1a1a,#ff5c00);color:#fff;padding:20px}
+    .card{width:100%;max-width:420px;background:#111;border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:32px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+    h1{margin:0 0 8px;font-size:30px}
+    p{color:#bbb;margin:0 0 24px;line-height:1.5}
+    label{display:block;margin:14px 0 6px;font-weight:bold}
+    input{width:100%;padding:14px;border-radius:10px;border:1px solid #333;background:#1b1b1b;color:#fff;font-size:16px;outline:none}
+    input:focus{border-color:#ff5c00}
+    button{width:100%;margin-top:20px;padding:15px;border:0;border-radius:10px;background:#ff5c00;color:#fff;font-weight:900;font-size:16px;cursor:pointer}
+    button:hover{background:#ff7a2b}
+    .msg{margin-top:16px;font-weight:bold}
+    .erro{color:#ff5555}
+    .ok{color:#00c853}
+    a{color:#ff9b55}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Área do Aluno 🔥</h1>
+    <p>Digite o mesmo e-mail usado na compra. Se o pagamento estiver liberado, você entrará no app.</p>
+
+    <label for="email">E-mail da compra</label>
+    <input type="email" id="email" placeholder="seu@email.com" />
+
+    <button onclick="verificarAcesso()">ENTRAR</button>
+
+    <div id="mensagem" class="msg"></div>
+
+    <p style="margin-top:24px;font-size:13px;">
+      Ainda não comprou? <a href="index.html">Voltar para a página de venda</a>
+    </p>
+  </div>
+
+  <script>
+    // COLE AQUI OS DADOS DO SEU SUPABASE
+    const SUPABASE_URL = "COLE_AQUI_SUA_SUPABASE_URL";
+    const SUPABASE_ANON_KEY = "COLE_AQUI_SUA_ANON_PUBLIC_KEY";
+
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function verificarAcesso() {
+      const email = document.getElementById("email").value.trim().toLowerCase();
+      const mensagem = document.getElementById("mensagem");
+
+      if (!email) {
+        mensagem.className = "msg erro";
+        mensagem.innerText = "Digite seu e-mail.";
+        return;
+      }
+
+      mensagem.className = "msg";
+      mensagem.innerText = "Verificando acesso...";
+
+      const { data, error } = await client
+        .from("clientes")
+        .select("email, pagou")
+        .eq("email", email)
+        .eq("pagou", true)
+        .maybeSingle();
+
+      if (error) {
+        mensagem.className = "msg erro";
+        mensagem.innerText = "Erro ao verificar acesso. Confira a tabela no Supabase.";
+        console.error(error);
+        return;
+      }
+
+      if (!data) {
+        mensagem.className = "msg erro";
+        mensagem.innerText = "Acesso não liberado. Use o e-mail da compra ou finalize o pagamento.";
+        return;
+      }
+
+      localStorage.setItem("acessoLiberado", "true");
+      localStorage.setItem("clienteEmail", email);
+
+      mensagem.className = "msg ok";
+      mensagem.innerText = "Acesso liberado! Redirecionando...";
+
+      setTimeout(() => {
+        window.location.href = "app.html";
+      }, 800);
+    }
+  </script>
+</body>
+</html>
